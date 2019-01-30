@@ -49,27 +49,16 @@ class AuthChecker extends Component<AuthCheckerProps> {
     // window.location.search = '';
 
     try {
-      /**
-       * REFACTOR: this request should be sent by a server or an azure function
-       * The `client_secret` should not be exposed.
-       */
-
-      const response = await fetch(
-        'https://github.com/login/oauth/access_token',
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            client_id: config.githubClientID,
-            client_secret: config.githubClientSecret,
-            code,
-          }),
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          mode: 'cors',
+      const response = await fetch(config.azureAccessTokenFunctionUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+          code,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        mode: 'cors',
+      });
 
       const body = await response.json();
       this.props.authenticationSuccess(body.access_token);

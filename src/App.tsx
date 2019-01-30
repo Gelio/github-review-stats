@@ -11,7 +11,7 @@ class App extends Component {
       <>
         <CssBaseline />
         <StoreProvider store={store}>
-          <AuthChecker />
+          <AuthChecker>Authenticated</AuthChecker>
         </StoreProvider>
       </>
     );
