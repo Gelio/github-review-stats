@@ -22,6 +22,7 @@
       }
     ],
     "prettier": true,
+    "object-literal-sort-keys": false,
     "import-group-ordering": [
       true,
       {
