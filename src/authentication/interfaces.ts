@@ -1,4 +1,4 @@
 export interface AuthenticationState {
   isLoading: boolean;
-  authToken: string | null;
+  accessToken: string | null;
 }

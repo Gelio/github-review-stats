@@ -1,32 +1,28 @@
-import { Action, ActionCreator } from 'redux';
+import { Action } from 'redux';
 
 export interface AuthenticationStartedAction
   extends Action<'AUTHENTICATION_STARTED'> {}
 
-export const authenticationStarted: ActionCreator<
-  AuthenticationStartedAction
-> = () => ({
+export const authenticationStarted = (): AuthenticationStartedAction => ({
   type: 'AUTHENTICATION_STARTED',
 });
 
 export interface AuthenticationSuccessAction
   extends Action<'AUTHENTICATION_SUCCESS'> {
-  authToken: string;
+  accessToken: string;
 }
 
-export const authenticationSuccess: ActionCreator<
-  AuthenticationSuccessAction
-> = (authToken: string) => ({
-  authToken,
+export const authenticationSuccess = (
+  accessToken: string,
+): AuthenticationSuccessAction => ({
+  accessToken,
   type: 'AUTHENTICATION_SUCCESS',
 });
 
 export interface AuthenticationErrorAction
   extends Action<'AUTHENTICATION_ERROR'> {}
 
-export const authenticationError: ActionCreator<
-  AuthenticationErrorAction
-> = () => ({
+export const authenticationError = (): AuthenticationErrorAction => ({
   type: 'AUTHENTICATION_ERROR',
 });
 

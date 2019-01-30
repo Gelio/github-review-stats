@@ -1,11 +1,12 @@
 import { Reducer } from 'redux';
+
 import { AuthenticationAction } from './actions';
 import { AuthenticationState } from './interfaces';
 
-const AUTH_TOKEN_STORAGE_KEY = 'authToken';
+const ACCESS_TOKEN_STORAGE_KEY = 'accessToken';
 
 const defaultState: AuthenticationState = {
-  authToken: localStorage.getItem(AUTH_TOKEN_STORAGE_KEY),
+  accessToken: localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY),
   isLoading: false,
 };
 
@@ -15,8 +16,10 @@ export const authenticationReducer: Reducer<
 > = (state = defaultState, action): AuthenticationState => {
   switch (action.type) {
     case 'AUTHENTICATION_SUCCESS':
+      localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, action.accessToken);
+
       return {
-        authToken: action.authToken,
+        accessToken: action.accessToken,
         isLoading: false,
         ...state,
       };

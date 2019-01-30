@@ -1,7 +1,8 @@
-import { combineReducers, createStore } from "redux";
-import { AuthenticationAction } from "./authentication/actions";
-import { AuthenticationState } from "./authentication/interfaces";
-import { authenticationReducer } from "./authentication/reducer";
+import { combineReducers, createStore } from 'redux';
+
+import { AuthenticationAction } from './authentication/actions';
+import { AuthenticationState } from './authentication/interfaces';
+import { authenticationReducer } from './authentication/reducer';
 
 export interface StoreState {
   authentication: AuthenticationState;

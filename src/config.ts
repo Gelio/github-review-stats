@@ -1,6 +1,7 @@
 const clientId = process.env.REACT_APP_CLIENT_ID;
 
 if (!clientId) {
+  // tslint:disable-next-line:no-console
   console.error(
     'Client ID is not specified. Make sure to fill in the environment variables.',
   );
@@ -8,13 +9,13 @@ if (!clientId) {
 
 const clientSecret = process.env.REACT_APP_CLIENT_SECRET;
 if (!clientSecret) {
+  // tslint:disable-next-line:no-console
   console.error(
     'Client secret is not specified. Make sure to fill in the environment variables.',
   );
 }
 
 export const config = {
-  GITHUB_API_URL: 'https://api.github.com/',
-  GITHUB_CLIENT_ID: clientId,
-  GITHUB_CLIENT_SECRET: clientSecret,
+  githubClientID: clientId,
+  githubClientSecret: clientSecret,
 };

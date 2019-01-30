@@ -1,32 +1,36 @@
-import * as React from 'react';
+import React, { Component } from 'react';
 import { connect, MapDispatchToProps, MapStateToProps } from 'react-redux';
 
-import { Button } from '../common/button';
 import { config } from '../config';
 import { StoreState } from '../store';
-import { authenticationSuccess } from './actions';
+import {
+  authenticationError,
+  authenticationStarted,
+  authenticationSuccess,
+} from './actions';
+import { AuthenticationPage } from './authentication-page';
 
 interface StoreProps {
   isAuthenticated: boolean;
   authToken?: string;
 }
 
-// TODO: complete authentication
-
 interface DispatchProps {
   authenticationSuccess: typeof authenticationSuccess;
+  authenticationStarted: typeof authenticationStarted;
+  authenticationError: typeof authenticationError;
 }
 
 type AuthCheckerProps = StoreProps & DispatchProps;
 
-class AuthChecker extends React.Component<AuthCheckerProps> {
+class AuthChecker extends Component<AuthCheckerProps> {
   public componentDidMount() {
     const url = new URL(window.location.href);
 
     if (url.searchParams.has('code')) {
-      const code = url.searchParams.get('code');
+      const code = url.searchParams.get('code') as string;
 
-      // TODO: fetch POST to authenticate
+      this.getAccessToken(code);
     }
   }
 
@@ -34,35 +38,51 @@ class AuthChecker extends React.Component<AuthCheckerProps> {
     const { isAuthenticated, children } = this.props;
 
     if (!isAuthenticated) {
-      return this.renderAuthenticationButton();
+      return <AuthenticationPage />;
     }
 
     return children;
   }
 
-  private renderAuthenticationButton = () => {
-    return (
-      <Button onClick={this.onAuthenticationButtonClick}>Authenticate</Button>
-    );
-  };
+  private getAccessToken = async (code: string) => {
+    this.props.authenticationStarted();
+    // window.location.search = '';
 
-  private onAuthenticationButtonClick = () => {
-    const redirectUrl = window.location.href;
-    const queryParams = [
-      `client_id=${config.GITHUB_CLIENT_ID}`,
-      `redirect_uri=${redirectUrl}`,
-    ].join('&');
+    try {
+      /**
+       * REFACTOR: this request should be sent by a server or an azure function
+       * The `client_secret` should not be exposed.
+       */
 
-    window.location.href = `https://github.com/login/oauth/authorize?${queryParams}`;
+      const response = await fetch(
+        'https://github.com/login/oauth/access_token',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            client_id: config.githubClientID,
+            client_secret: config.githubClientSecret,
+            code,
+          }),
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          mode: 'cors',
+        },
+      );
+
+      const body = await response.json();
+      this.props.authenticationSuccess(body.access_token);
+    } catch (error) {
+      this.props.authenticationError();
+    }
   };
 }
 
-const mapStateToProps: MapStateToProps<
-  StoreProps,
-  null,
-  StoreState
-> = store => {
-  const { authToken } = store.authentication;
+const mapStateToProps: MapStateToProps<StoreProps, {}, StoreState> = (
+  store,
+) => {
+  const { accessToken: authToken } = store.authentication;
 
   return {
     authToken: authToken || undefined,
@@ -70,12 +90,15 @@ const mapStateToProps: MapStateToProps<
   };
 };
 
-const mapDispatchToProps: MapDispatchToProps<DispatchProps, null> = {
+const mapDispatchToProps: MapDispatchToProps<DispatchProps, {}> = {
   authenticationSuccess,
+  authenticationError,
+  authenticationStarted,
 };
 
-const connectedAuthChecker = connect(
+const ConnectedAuthChecker = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(AuthChecker);
-export { connectedAuthChecker as AuthChecker };
+
+export { ConnectedAuthChecker as AuthChecker };
