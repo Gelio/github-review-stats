@@ -1,5 +1,11 @@
 {
-  "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+  "extends": [
+    "tslint:recommended",
+    "tslint-react",
+    "tslint-import-group-ordering",
+    "tslint-config-prettier",
+    "tslint-plugin-prettier"
+  ],
   "linterOptions": {
     "exclude": [
       "config/**/*.js",
@@ -13,6 +19,33 @@
       true,
       {
         "multiline": "always"
+      }
+    ],
+    "prettier": true,
+    "import-group-ordering": [
+      true,
+      {
+        "imports-groups": [
+          {
+            "name": "dependencies"
+          },
+          {
+            "name": "other"
+          }
+        ],
+        "matching-rules": [
+          {
+            "type": "dependencies",
+            "imports-group": "dependencies",
+            "disable-native-nodejs-modules": true,
+            "from-package.json": true
+          },
+          {
+            "type": "project",
+            "matches": ".*",
+            "imports-group": "other"
+          }
+        ]
       }
     ]
   }
