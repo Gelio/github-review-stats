@@ -6,7 +6,11 @@
   "azureFunctions.preDeployTask": "installExtensions",
   "files.exclude": {
     "obj": true,
-    "bin": true
+    "bin": true,
+    "node_modules": true
   },
-  "debug.internalConsoleOptions": "neverOpen"
+  "debug.internalConsoleOptions": "neverOpen",
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#577534"
+  }
 }

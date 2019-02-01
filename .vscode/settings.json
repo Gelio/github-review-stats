@@ -5,6 +5,10 @@
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    "**/node_modules": true
+    "**/node_modules": true,
+    "azure": true
+  },
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#532bb1"
   }
 }
