@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Paper,
   StyleRulesCallback,
   Typography,
@@ -7,10 +8,14 @@ import {
   WithStyles,
 } from '@material-ui/core';
 import React, { StatelessComponent } from 'react';
+import { connect, MapStateToProps } from 'react-redux';
 
 import { config } from '../config';
+import { StoreState } from '../store';
 
-const styles: StyleRulesCallback<'main' | 'paper' | 'header'> = (theme) => ({
+const styles: StyleRulesCallback<
+  'main' | 'paper' | 'header' | 'loadingWrapper'
+> = (theme) => ({
   main: {
     width: 'auto',
 
@@ -34,39 +39,78 @@ const styles: StyleRulesCallback<'main' | 'paper' | 'header'> = (theme) => ({
   header: {
     marginBottom: 5,
   },
+  loadingWrapper: {
+    textAlign: 'center',
+  },
 });
 
-const AuthenticationPage: StatelessComponent<WithStyles<typeof styles>> = ({
+interface AuthenticationPageStateProps {
+  isLoading: boolean;
+  hasError: boolean;
+}
+
+type AuthenticationPageProps = WithStyles<typeof styles> &
+  AuthenticationPageStateProps;
+
+const AuthenticationPage: StatelessComponent<AuthenticationPageProps> = ({
   classes,
+  isLoading,
+  hasError,
 }) => {
   return (
     <main className={classes.main}>
       <Paper className={classes.paper}>
         <Typography variant="h4" className={classes.header}>
-          GitHub review stats
+          GitHub Review Stats
         </Typography>
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={onAuthenticationButtonClick}
-        >
-          Sign up with GitHub
-        </Button>
+        {isLoading && (
+          <div className={classes.loadingWrapper}>
+            <Typography gutterBottom={true}>Signing in...</Typography>
+            <CircularProgress />
+          </div>
+        )}
+
+        {hasError && (
+          <Typography gutterBottom={true} color="error">
+            An error occurred while signing in. Please try again.
+          </Typography>
+        )}
+
+        {!isLoading && (
+          <Button
+            variant="contained"
+            color="primary"
+            href={getGithubAuthenticationUrl()}
+          >
+            Sign up with GitHub
+          </Button>
+        )}
       </Paper>
     </main>
   );
 };
 
-const onAuthenticationButtonClick = () => {
+const getGithubAuthenticationUrl = () => {
   const redirectUrl = window.location.href;
   const queryParams = [
     `client_id=${config.githubClientID}`,
     `redirect_uri=${redirectUrl}`,
   ].join('&');
 
-  window.location.href = `https://github.com/login/oauth/authorize?${queryParams}`;
+  return `https://github.com/login/oauth/authorize?${queryParams}`;
 };
 
-const StyledAuthenticationPage = withStyles(styles)(AuthenticationPage);
-export { StyledAuthenticationPage as AuthenticationPage };
+const mapStateToProps: MapStateToProps<
+  AuthenticationPageStateProps,
+  {},
+  StoreState
+> = (state) => ({
+  isLoading: state.authentication.isLoading,
+  hasError: state.authentication.hasError,
+});
+
+const ConnectedAuthenticationPage = connect(mapStateToProps)(
+  withStyles(styles)(AuthenticationPage),
+);
+export { ConnectedAuthenticationPage as AuthenticationPage };

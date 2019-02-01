@@ -8,6 +8,7 @@ const ACCESS_TOKEN_STORAGE_KEY = 'accessToken';
 const defaultState: AuthenticationState = {
   accessToken: localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY),
   isLoading: false,
+  hasError: false,
 };
 
 export const authenticationReducer: Reducer<
@@ -19,21 +20,23 @@ export const authenticationReducer: Reducer<
       localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, action.accessToken);
 
       return {
+        ...state,
         accessToken: action.accessToken,
         isLoading: false,
-        ...state,
       };
 
     case 'AUTHENTICATION_ERROR':
       return {
-        isLoading: false,
         ...state,
+        isLoading: false,
+        hasError: true,
       };
 
     case 'AUTHENTICATION_STARTED':
       return {
-        isLoading: false,
         ...state,
+        isLoading: true,
+        hasError: false,
       };
 
     default:

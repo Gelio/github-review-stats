@@ -1,41 +1,53 @@
 import React, { Component } from 'react';
-import { connect, MapDispatchToProps, MapStateToProps } from 'react-redux';
+import { connect, DispatchProp, MapStateToProps } from 'react-redux';
 
-import { config } from '../config';
 import { StoreState } from '../store';
-import {
-  authenticationError,
-  authenticationStarted,
-  authenticationSuccess,
-} from './actions';
 import { AuthenticationPage } from './authentication-page';
+import { exchangeCodeForAccessToken } from './exchange-code-for-access-token';
+import { LoadingAuthData } from './loading-auth-data';
 
 interface StoreProps {
   isAuthenticated: boolean;
-  authToken?: string;
+  accessToken?: string;
 }
 
-interface DispatchProps {
-  authenticationSuccess: typeof authenticationSuccess;
-  authenticationStarted: typeof authenticationStarted;
-  authenticationError: typeof authenticationError;
+type AuthCheckerProps = StoreProps & DispatchProp;
+
+interface AuthCheckerState {
+  hasInitialized: boolean;
 }
 
-type AuthCheckerProps = StoreProps & DispatchProps;
+class AuthChecker extends Component<AuthCheckerProps, AuthCheckerState> {
+  public state: AuthCheckerState = {
+    hasInitialized: false,
+  };
 
-class AuthChecker extends Component<AuthCheckerProps> {
   public componentDidMount() {
     const url = new URL(window.location.href);
 
     if (url.searchParams.has('code')) {
       const code = url.searchParams.get('code') as string;
+      window.history.replaceState(
+        null,
+        document.title,
+        window.location.pathname,
+      );
 
-      this.getAccessToken(code);
+      exchangeCodeForAccessToken(this.props.dispatch, code);
     }
+
+    this.setState({
+      hasInitialized: true,
+    });
   }
 
   public render() {
     const { isAuthenticated, children } = this.props;
+    const { hasInitialized } = this.state;
+
+    if (!hasInitialized) {
+      return <LoadingAuthData />;
+    }
 
     if (!isAuthenticated) {
       return <AuthenticationPage />;
@@ -43,51 +55,19 @@ class AuthChecker extends Component<AuthCheckerProps> {
 
     return children;
   }
-
-  private getAccessToken = async (code: string) => {
-    this.props.authenticationStarted();
-    // window.location.search = '';
-
-    try {
-      const response = await fetch(config.azureAccessTokenFunctionUrl, {
-        method: 'POST',
-        body: JSON.stringify({
-          code,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        mode: 'cors',
-      });
-
-      const body = await response.json();
-      this.props.authenticationSuccess(body.access_token);
-    } catch (error) {
-      this.props.authenticationError();
-    }
-  };
 }
 
 const mapStateToProps: MapStateToProps<StoreProps, {}, StoreState> = (
   store,
 ) => {
-  const { accessToken: authToken } = store.authentication;
+  const { accessToken } = store.authentication;
 
   return {
-    authToken: authToken || undefined,
-    isAuthenticated: !!authToken,
+    accessToken: accessToken || undefined,
+    isAuthenticated: !!accessToken,
   };
 };
 
-const mapDispatchToProps: MapDispatchToProps<DispatchProps, {}> = {
-  authenticationSuccess,
-  authenticationError,
-  authenticationStarted,
-};
-
-const ConnectedAuthChecker = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AuthChecker);
+const ConnectedAuthChecker = connect(mapStateToProps)(AuthChecker);
 
 export { ConnectedAuthChecker as AuthChecker };
