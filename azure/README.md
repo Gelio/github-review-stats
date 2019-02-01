@@ -24,4 +24,5 @@ extension to develop functions and test them locally.
 
 ## Deployment
 
-In progress...
+It is recommended to use VSCode's [Azure Functions](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions)
+extension to deploy Azure Functions.
