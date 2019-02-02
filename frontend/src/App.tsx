@@ -1,4 +1,6 @@
+import DateFnsUtils from '@date-io/date-fns';
 import { CssBaseline } from '@material-ui/core';
+import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import React, { Component } from 'react';
 import { Provider as StoreProvider } from 'react-redux';
 
@@ -13,15 +15,17 @@ class App extends Component {
     return (
       <>
         <CssBaseline />
-        <StoreProvider store={store}>
-          <AuthChecker>
-            <ApolloSetup>
-              <UserInfoBar />
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <StoreProvider store={store}>
+            <AuthChecker>
+              <ApolloSetup>
+                <UserInfoBar />
 
-              <ReviewStats />
-            </ApolloSetup>
-          </AuthChecker>
-        </StoreProvider>
+                <ReviewStats />
+              </ApolloSetup>
+            </AuthChecker>
+          </StoreProvider>
+        </MuiPickersUtilsProvider>
       </>
     );
   }
