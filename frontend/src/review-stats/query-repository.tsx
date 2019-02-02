@@ -4,7 +4,9 @@ import gql from 'graphql-tag';
 import React, { FunctionComponent } from 'react';
 import { Query } from 'react-apollo';
 
+import { Charts } from './charts';
 import { ReviewStatsInputs } from './interfaces';
+import { transformPullRequests } from './transform-pull-requests';
 
 const GET_REPOSITORY_INFO_QUERY = gql`
   query GetRepositoryInfo(
@@ -68,8 +70,10 @@ export const QueryRepository: FunctionComponent<QueryRepositoryProps> = ({
             return 'Error!';
           }
 
-          console.log(data);
-          return 'Got data';
+          const pullRequests = data.search.nodes;
+          const reviews = transformPullRequests(pullRequests);
+
+          return <Charts reviews={reviews} />;
         }}
       </Query>
     </div>

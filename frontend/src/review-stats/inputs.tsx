@@ -30,9 +30,7 @@ const Inputs: FunctionComponent<WithStyles<typeof styles> & InputsProps> = ({
   classes,
   onQuery,
 }) => {
-  const [repository, setRepository] = useState(
-    'Gelio/tslint-import-group-ordering',
-  );
+  const [repository, setRepository] = useState('Facebook/react');
   const onRepositoryInputChange: NonNullable<TextFieldProps['onChange']> = (
     event,
   ) => {
