@@ -92,6 +92,7 @@ const getGithubAuthenticationUrl = () => {
   const queryParams = [
     `client_id=${config.githubClientID}`,
     `redirect_uri=${redirectUrl}`,
+    'scope=repo',
   ].join('&');
 
   return `https://github.com/login/oauth/authorize?${queryParams}`;
