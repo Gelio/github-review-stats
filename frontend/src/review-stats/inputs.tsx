@@ -13,12 +13,12 @@ import React, { FunctionComponent, useCallback, useState } from 'react';
 
 import { ReviewStatsInputs } from './interfaces';
 
-const styles: StyleRulesCallback<'input' | 'withMarginLeft'> = (theme) => ({
+const styles: StyleRulesCallback<'input' | 'withMarginRight'> = (theme) => ({
   input: {
     marginBottom: theme.spacing.unit * 2,
   },
-  withMarginLeft: {
-    marginLeft: theme.spacing.unit,
+  withMarginRight: {
+    marginRight: theme.spacing.unit,
   },
 });
 
@@ -72,14 +72,14 @@ const Inputs: FunctionComponent<WithStyles<typeof styles> & InputsProps> = ({
           onChange={setFromDate}
           label="From"
           disableFuture={true}
-          className={classes.input}
+          className={`${classes.input} ${classes.withMarginRight}`}
         />
         <DateTimePicker
           value={toDate}
           onChange={setToDate}
           label="To"
           disableFuture={true}
-          className={`${classes.input} ${classes.withMarginLeft}`}
+          className={classes.input}
         />
       </div>
 
