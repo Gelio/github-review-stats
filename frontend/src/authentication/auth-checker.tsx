@@ -33,7 +33,7 @@ class AuthChecker extends Component<AuthCheckerProps, AuthCheckerState> {
         window.location.pathname,
       );
 
-      exchangeCodeForAccessToken(this.props.dispatch, code);
+      exchangeCodeForAccessToken(this.props.dispatch, fetch, code);
     }
 
     this.setState({

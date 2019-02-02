@@ -10,6 +10,7 @@ import {
 
 export const exchangeCodeForAccessToken = async (
   dispatch: Dispatch<AuthenticationAction>,
+  fetch: typeof window.fetch,
   code: string,
 ) => {
   dispatch(authenticationStarted());
