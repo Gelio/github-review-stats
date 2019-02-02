@@ -42,6 +42,15 @@ export const MetricPickerWithCharts: FunctionComponent<{
           <MenuItem value={'totalComments' as MetricKind}>
             Total comments
           </MenuItem>
+          <MenuItem value={'prsInteractedWith' as MetricKind}>
+            PRs interacted with
+          </MenuItem>
+          <MenuItem value={'linesOfCodeReviewed' as MetricKind}>
+            Lines of code reviewed
+          </MenuItem>
+          <MenuItem value={'filesReviewed' as MetricKind}>
+            Files reviewed
+          </MenuItem>
         </Select>
       </FormControl>
 

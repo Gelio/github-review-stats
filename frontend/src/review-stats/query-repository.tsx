@@ -52,8 +52,8 @@ export const QueryRepository: FunctionComponent<QueryRepositoryProps> = ({
   queryData,
 }) => {
   const queryVariables = {
-    firstPrs: 50,
-    firstReviews: 50,
+    firstPrs: 100,
+    firstReviews: 100,
     query: createSearchQueryString(queryData),
   };
 
