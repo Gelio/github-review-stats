@@ -10,12 +10,13 @@ import {
 import React, { StatelessComponent } from 'react';
 import { connect, MapStateToProps } from 'react-redux';
 
+import { AppTitle } from '../app-title';
 import { config } from '../config';
 import { StoreState } from '../store';
 
-const styles: StyleRulesCallback<
-  'main' | 'paper' | 'header' | 'loadingWrapper'
-> = (theme) => ({
+const styles: StyleRulesCallback<'main' | 'paper' | 'loadingWrapper'> = (
+  theme,
+) => ({
   main: {
     width: 'auto',
 
@@ -35,9 +36,6 @@ const styles: StyleRulesCallback<
     alignItems: 'center',
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px`,
-  },
-  header: {
-    marginBottom: 5,
   },
   loadingWrapper: {
     textAlign: 'center',
@@ -60,9 +58,7 @@ const AuthenticationPage: StatelessComponent<AuthenticationPageProps> = ({
   return (
     <main className={classes.main}>
       <Paper className={classes.paper}>
-        <Typography variant="h4" className={classes.header}>
-          GitHub Review Stats
-        </Typography>
+        <AppTitle />
 
         {isLoading && (
           <div className={classes.loadingWrapper}>

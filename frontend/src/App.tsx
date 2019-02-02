@@ -5,6 +5,7 @@ import { Provider as StoreProvider } from 'react-redux';
 import { ApolloSetup } from './apollo/apollo-setup';
 import { AuthChecker } from './authentication/auth-checker';
 import { store } from './store';
+import { UserInfoBar } from './user-info-bar/user-info-bar';
 
 class App extends Component {
   public render() {
@@ -14,7 +15,7 @@ class App extends Component {
         <StoreProvider store={store}>
           <AuthChecker>
             <ApolloSetup>
-              <div>Authenticated</div>
+              <UserInfoBar />
             </ApolloSetup>
           </AuthChecker>
         </StoreProvider>
