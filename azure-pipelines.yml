@@ -7,10 +7,6 @@ steps:
     displayName: Install dependencies
     workingDirectory: frontend
 
-  - script: npm run test
-    displayName: Run tests
-    workingDirectory: frontend
-
   - script: npm run lint
     displayName: Run TSLint
     workingDirectory: frontend
