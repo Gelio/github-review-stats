@@ -60,7 +60,7 @@ const Charts: FunctionComponent<WithStyles<typeof styles> & ChartsOwnProps> = ({
           <CartesianGrid />
           <XAxis dataKey="name" />
           <YAxis />
-          <Bar dataKey="count" />
+          <Bar dataKey="count" fill={colorPalette[0]} />
           <Tooltip />
         </BarChart>
       </ResponsiveContainer>

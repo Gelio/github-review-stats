@@ -1,16 +1,11 @@
 import { PullRequest, TransformedReview } from './interfaces';
+import { ReviewMetric } from './metrics/types';
 
 export const transformPullRequests = (
   pullRequests: PullRequest[],
+  reviewMetric: ReviewMetric,
 ): TransformedReview[] => {
-  const reviewsMap: Record<string, number> = {};
-
-  pullRequests.forEach((pr) => {
-    pr.reviews.nodes.forEach((review) => {
-      reviewsMap[review.author.login] =
-        (reviewsMap[review.author.login] || 0) + 1;
-    });
-  });
+  const reviewsMap = reviewMetric(pullRequests);
 
   const reviews = Object.entries(reviewsMap).map(
     ([name, count]): TransformedReview => ({
