@@ -3,11 +3,11 @@ import { connect, DispatchProp, MapStateToProps } from 'react-redux';
 
 import { StoreState } from '../store';
 import { AuthenticationPage } from './authentication-page';
+import { AuthenticationVerifier } from './authentication-verifier';
 import { exchangeCodeForAccessToken } from './exchange-code-for-access-token';
 import { LoadingAuthData } from './loading-auth-data';
 
 interface StoreProps {
-  isAuthenticated: boolean;
   accessToken?: string;
 }
 
@@ -22,7 +22,7 @@ class AuthChecker extends Component<AuthCheckerProps, AuthCheckerState> {
     hasInitialized: false,
   };
 
-  public componentDidMount() {
+  public async componentDidMount() {
     const url = new URL(window.location.href);
 
     if (url.searchParams.has('code')) {
@@ -42,31 +42,30 @@ class AuthChecker extends Component<AuthCheckerProps, AuthCheckerState> {
   }
 
   public render() {
-    const { isAuthenticated, children } = this.props;
+    const { children, accessToken, dispatch } = this.props;
     const { hasInitialized } = this.state;
 
     if (!hasInitialized) {
       return <LoadingAuthData />;
     }
 
-    if (!isAuthenticated) {
+    if (!accessToken) {
       return <AuthenticationPage />;
     }
 
-    return children;
+    return (
+      <AuthenticationVerifier accessToken={accessToken} dispatch={dispatch}>
+        {children}
+      </AuthenticationVerifier>
+    );
   }
 }
 
 const mapStateToProps: MapStateToProps<StoreProps, {}, StoreState> = (
   store,
-) => {
-  const { accessToken } = store.authentication;
-
-  return {
-    accessToken: accessToken || undefined,
-    isAuthenticated: !!accessToken,
-  };
-};
+) => ({
+  accessToken: store.authentication.accessToken,
+});
 
 const ConnectedAuthChecker = connect(mapStateToProps)(AuthChecker);
 

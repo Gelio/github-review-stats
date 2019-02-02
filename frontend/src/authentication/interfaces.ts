@@ -1,5 +1,6 @@
 export interface AuthenticationState {
   isLoading: boolean;
   hasError: boolean;
-  accessToken: string | null;
+  accessToken?: string;
+  login?: string;
 }

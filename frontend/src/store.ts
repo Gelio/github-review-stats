@@ -2,7 +2,7 @@ import { combineReducers, createStore } from 'redux';
 
 import { AuthenticationAction } from './authentication/actions';
 import { AuthenticationState } from './authentication/interfaces';
-import { authenticationReducer } from './authentication/reducer';
+import { authenticationReducerFactory } from './authentication/reducer';
 
 export interface StoreState {
   authentication: AuthenticationState;
@@ -11,7 +11,7 @@ export interface StoreState {
 export type StoreAction = AuthenticationAction;
 
 const reducer = combineReducers<StoreState, StoreAction>({
-  authentication: authenticationReducer,
+  authentication: authenticationReducerFactory(localStorage),
 });
 
 export const store = createStore(
