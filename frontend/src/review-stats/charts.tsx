@@ -21,6 +21,7 @@ const styles: StyleRulesCallback<'chartsWrapper'> = (_) => ({
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'column',
+    overflow: 'hidden',
   },
 });
 
