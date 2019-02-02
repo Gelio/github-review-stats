@@ -2,9 +2,9 @@ import { Dispatch } from 'redux';
 
 import {
   AuthenticationAction,
+  authenticationError,
   authenticationStarted,
   authenticationSuccess,
-  authenticationError,
 } from './actions';
 import { exchangeCodeForAccessToken } from './exchange-code-for-access-token';
 
