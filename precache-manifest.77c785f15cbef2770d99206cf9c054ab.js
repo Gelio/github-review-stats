@@ -1,7 +1,7 @@
 self.__precacheManifest = [
   {
-    "revision": "46d36b9f8add87ac1f0a",
-    "url": "/github-review-stats/static/js/main.46d36b9f.chunk.js"
+    "revision": "89568d3225170290e8a2",
+    "url": "/github-review-stats/static/js/main.89568d32.chunk.js"
   },
   {
     "revision": "dd2655277d34b02d036f",
@@ -12,7 +12,7 @@ self.__precacheManifest = [
     "url": "/github-review-stats/static/js/runtime~main.40704383.js"
   },
   {
-    "revision": "f88d4073720543f1307c5018fce58959",
+    "revision": "5a44672c4ee15c7f48d7e28e4c423251",
     "url": "/github-review-stats/index.html"
   }
 ];
