@@ -1,0 +1,20 @@
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '10.x'
+
+  - script: npm ci
+    displayName: Install dependencies
+    workingDirectory: frontend
+
+  - script: npm run test
+    displayName: Run tests
+    workingDirectory: frontend
+
+  - script: npm run lint
+    displayName: Run TSLint
+    workingDirectory: frontend
+
+  - script: npm run build
+    displayName: Build the project
+    workingDirectory: frontend
