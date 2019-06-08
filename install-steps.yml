@@ -1,0 +1,9 @@
+steps:
+  - task: NodeTool@0
+    displayName: Install Node
+    inputs:
+      versionSpec: '10.x'
+
+  - script: npm ci
+    displayName: Install dependencies
+    workingDirectory: frontend

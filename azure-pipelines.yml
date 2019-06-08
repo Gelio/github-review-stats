@@ -1,16 +1,25 @@
-steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '10.x'
+stages:
+  - stage: verify
+    jobs:
+      - job: lint
+        steps:
+          - template: install-steps.yml
+          - script: npm run lint
+            displayName: Run TSLint
+            workingDirectory: frontend
 
-  - script: npm ci
-    displayName: Install dependencies
-    workingDirectory: frontend
+      - job: build
+        steps:
+          - template: install-steps.yml
+          - script: npm run build
+            displayName: Build the project
+            workingDirectory: frontend
 
-  - script: npm run lint
-    displayName: Run TSLint
-    workingDirectory: frontend
-
-  - script: npm run build
-    displayName: Build the project
-    workingDirectory: frontend
+      - job: test_frontend
+        variables:
+          CI: true
+        steps:
+          - template: install-steps.yml
+          - script: npm run test
+            displayName: Test the frontend
+            workingDirectory: frontend
