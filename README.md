@@ -1,5 +1,7 @@
 # GitHub Review Stats
 
+[![Build Status](https://dev.azure.com/vorenygelio/GitHub%20Review%20Stats/_apis/build/status/Gelio.github-review-stats?branchName=master)](https://dev.azure.com/vorenygelio/GitHub%20Review%20Stats/_build/latest?definitionId=4&branchName=master)
+
 Visualizes pull request stats for a given repository during a selected period of time.
 
 Allows choosing various metrics:
