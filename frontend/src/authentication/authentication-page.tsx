@@ -11,8 +11,9 @@ import React, { StatelessComponent } from 'react';
 import { connect, MapStateToProps } from 'react-redux';
 
 import { AppTitle } from '../app-title';
-import { config } from '../config';
 import { StoreState } from '../store';
+import { getGithubAuthenticationUrl } from './get-github-authentication-url';
+import { RepositoriesPermissions } from './repositories-permissions';
 
 const styles: StyleRulesCallback<'main' | 'paper' | 'loadingWrapper'> = (
   theme,
@@ -78,7 +79,9 @@ const AuthenticationPage: StatelessComponent<AuthenticationPageProps> = ({
           <Button
             variant="contained"
             color="primary"
-            href={getGithubAuthenticationUrl()}
+            href={getGithubAuthenticationUrl(
+              RepositoriesPermissions.PublicOnly,
+            )}
           >
             Sign up with GitHub
           </Button>
@@ -86,17 +89,6 @@ const AuthenticationPage: StatelessComponent<AuthenticationPageProps> = ({
       </Paper>
     </main>
   );
-};
-
-const getGithubAuthenticationUrl = () => {
-  const redirectUrl = window.location.href;
-  const queryParams = [
-    `client_id=${config.githubClientID}`,
-    `redirect_uri=${redirectUrl}`,
-    'scope=public_repo',
-  ].join('&');
-
-  return `https://github.com/login/oauth/authorize?${queryParams}`;
 };
 
 const mapStateToProps: MapStateToProps<
