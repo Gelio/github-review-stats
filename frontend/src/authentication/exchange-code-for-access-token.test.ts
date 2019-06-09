@@ -7,6 +7,7 @@ import {
   authenticationSuccess,
 } from './actions';
 import { exchangeCodeForAccessToken } from './exchange-code-for-access-token';
+import { RepositoriesPermissions } from './repositories-permissions';
 
 describe('exchangeCodeForAccessToken', () => {
   let dispatch: Dispatch<AuthenticationAction>;
@@ -17,7 +18,9 @@ describe('exchangeCodeForAccessToken', () => {
 
   it('should dispatch "authentication started" action', async () => {
     const mockFetch = jest.fn(() =>
-      Promise.resolve({ json: () => Promise.resolve({ access_token: 'a' }) }),
+      Promise.resolve({
+        json: () => Promise.resolve({ access_token: 'a', scope: 'repo' }),
+      }),
     );
 
     await exchangeCodeForAccessToken(dispatch, mockFetch, 'code');
@@ -27,7 +30,9 @@ describe('exchangeCodeForAccessToken', () => {
 
   it('should send a request with the code', async () => {
     const mockFetch = jest.fn(() =>
-      Promise.resolve({ json: () => Promise.resolve({ access_token: 'a' }) }),
+      Promise.resolve({
+        json: () => Promise.resolve({ access_token: 'a', scope: 'repo' }),
+      }),
     );
 
     await exchangeCodeForAccessToken(dispatch, mockFetch, 'code');
@@ -46,13 +51,19 @@ describe('exchangeCodeForAccessToken', () => {
 
     const mockFetch = jest.fn(() =>
       Promise.resolve({
-        json: () => Promise.resolve({ access_token: accessToken }),
+        json: () =>
+          Promise.resolve({ access_token: accessToken, scope: 'repo' }),
       }),
     );
 
     await exchangeCodeForAccessToken(dispatch, mockFetch, 'code');
 
-    expect(dispatch).toHaveBeenCalledWith(authenticationSuccess(accessToken));
+    expect(dispatch).toHaveBeenCalledWith(
+      authenticationSuccess(
+        accessToken,
+        RepositoriesPermissions.PrivateAndPublic,
+      ),
+    );
   });
 
   it('should dispatch "authentication error" action when the request failed', async () => {

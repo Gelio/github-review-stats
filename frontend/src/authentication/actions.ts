@@ -1,5 +1,7 @@
 import { Action } from 'redux';
 
+import { RepositoriesPermissions } from './repositories-permissions';
+
 export type AuthenticationStartedAction = Action<'AUTHENTICATION_STARTED'>;
 
 export const authenticationStarted = (): AuthenticationStartedAction => ({
@@ -9,12 +11,15 @@ export const authenticationStarted = (): AuthenticationStartedAction => ({
 export interface AuthenticationSuccessAction
   extends Action<'AUTHENTICATION_SUCCESS'> {
   accessToken: string;
+  repositoriesPermissions: RepositoriesPermissions;
 }
 
 export const authenticationSuccess = (
   accessToken: string,
+  repositoriesPermissions: RepositoriesPermissions,
 ): AuthenticationSuccessAction => ({
   accessToken,
+  repositoriesPermissions,
   type: 'AUTHENTICATION_SUCCESS',
 });
 

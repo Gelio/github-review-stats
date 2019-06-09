@@ -7,6 +7,13 @@ import {
   authenticationStarted,
   authenticationSuccess,
 } from './actions';
+import { getRepositoriesPermissionsFromScope } from './repositories-permissions';
+
+interface ReceiveAccessTokenBody {
+  access_token?: string;
+  scope?: string;
+  token_type: string;
+}
 
 export const exchangeCodeForAccessToken = async (
   dispatch: Dispatch<AuthenticationAction>,
@@ -27,8 +34,8 @@ export const exchangeCodeForAccessToken = async (
       mode: 'cors',
     });
 
-    const body = await response.json();
-    if (!body.access_token) {
+    const body: ReceiveAccessTokenBody = await response.json();
+    if (!body.access_token || !body.scope) {
       console.error(
         'Could not sign in via an Azure function. Payload received',
         body,
@@ -36,7 +43,11 @@ export const exchangeCodeForAccessToken = async (
       throw new Error('Could not sign in');
     }
 
-    dispatch(authenticationSuccess(body.access_token));
+    const repositoriesPermissions = getRepositoriesPermissionsFromScope(
+      body.scope,
+    );
+
+    dispatch(authenticationSuccess(body.access_token, repositoriesPermissions));
   } catch (error) {
     dispatch(authenticationError());
   }

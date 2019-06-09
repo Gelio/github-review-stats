@@ -15,12 +15,17 @@ import { AppTitle } from '../app-title';
 import { authenticationLogout } from '../authentication/actions';
 import { StoreState } from '../store';
 import { getUserProfileUrl } from './get-user-profile-url';
+import { RepositoriesPermissions } from '../authentication/repositories-permissions';
+import { EnablePrivateReposButton } from './enable-private-repos-button';
 
 interface StateProps {
   login?: string;
+  repositoriesPermissions?: RepositoriesPermissions;
 }
 
-const styles: StyleRulesCallback<'main' | 'signOutButton'> = (theme) => ({
+const styles: StyleRulesCallback<
+  'main' | 'signOutButton' | 'privateReposInfo'
+> = (theme) => ({
   main: {
     width: 'auto',
 
@@ -38,13 +43,18 @@ const styles: StyleRulesCallback<'main' | 'signOutButton'> = (theme) => ({
   signOutButton: {
     textAlign: 'right',
   },
+  privateReposInfo: {
+    marginTop: theme.spacing(1),
+  },
 });
 
 const UserInfoBar: FunctionComponent<
   StateProps & DispatchProp & WithStyles<typeof styles>
-> = ({ login, dispatch, classes }) => {
+> = ({ login, repositoriesPermissions, dispatch, classes }) => {
   if (!login) {
     throw new Error('Login is required');
+  } else if (!repositoriesPermissions) {
+    throw new Error('Repositories permissions are required');
   }
 
   const signOut = useCallback(() => {
@@ -54,7 +64,6 @@ const UserInfoBar: FunctionComponent<
   return (
     <Paper className={classes.main}>
       <AppTitle />
-
       <Grid container={true} alignItems="center">
         <Grid item={true} xs={8}>
           <Typography>
@@ -71,6 +80,20 @@ const UserInfoBar: FunctionComponent<
           </Button>
         </Grid>
       </Grid>
+
+      <div className={classes.privateReposInfo}>
+        {repositoriesPermissions ===
+        RepositoriesPermissions.PrivateAndPublic ? (
+          <Typography>Access to private repositories is enabled</Typography>
+        ) : (
+          <>
+            <Typography>
+              Only access to public repositories is granted.
+            </Typography>
+            <EnablePrivateReposButton />
+          </>
+        )}
+      </div>
     </Paper>
   );
 };
@@ -79,6 +102,7 @@ const mapStateToProps: MapStateToProps<StateProps, {}, StoreState> = ({
   authentication,
 }) => ({
   login: authentication.login,
+  repositoriesPermissions: authentication.repositoriesPermissions,
 });
 
 const ConnectedUserInfoBar = connect(mapStateToProps)(
