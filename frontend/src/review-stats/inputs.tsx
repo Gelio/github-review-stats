@@ -15,10 +15,10 @@ import { ReviewStatsInputs } from './interfaces';
 
 const styles: StyleRulesCallback<'input' | 'withMarginRight'> = (theme) => ({
   input: {
-    marginBottom: theme.spacing.unit * 2,
+    marginBottom: theme.spacing(2),
   },
   withMarginRight: {
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
   },
 });
 

@@ -18,5 +18,11 @@
     "titleBar.inactiveBackground": "#00b3e699",
     "titleBar.activeForeground": "#15202b",
     "titleBar.inactiveForeground": "#15202b99"
-  }
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    { "language": "typescript", "autoFix": true },
+    { "language": "typescriptreact", "autoFix": true }
+  ]
 }

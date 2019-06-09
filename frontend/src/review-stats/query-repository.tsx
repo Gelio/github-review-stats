@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import React, { FunctionComponent } from 'react';
 import { Query } from 'react-apollo';
 
-import { ReviewStatsInputs } from './interfaces';
+import { ReviewStatsInputs, PullRequest } from './interfaces';
 import { MetricPickerWithCharts } from './metric-picker-with-charts';
 
 const GET_REPOSITORY_INFO_QUERY = gql`
@@ -48,6 +48,12 @@ interface QueryRepositoryProps {
   queryData: ReviewStatsInputs;
 }
 
+interface QueryResponse {
+  search: {
+    nodes: PullRequest[];
+  };
+}
+
 export const QueryRepository: FunctionComponent<QueryRepositoryProps> = ({
   queryData,
 }) => {
@@ -59,12 +65,15 @@ export const QueryRepository: FunctionComponent<QueryRepositoryProps> = ({
 
   return (
     <div>
-      <Query query={GET_REPOSITORY_INFO_QUERY} variables={queryVariables}>
+      <Query<QueryResponse>
+        query={GET_REPOSITORY_INFO_QUERY}
+        variables={queryVariables}
+      >
         {({ loading, error, data }) => {
           if (loading) {
             return <CircularProgress />;
           }
-          if (error) {
+          if (error || !data) {
             console.error('Error while fetching the query', error);
             return 'Error!';
           }

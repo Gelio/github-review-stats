@@ -20,7 +20,7 @@ export const AuthenticationVerifier: FunctionComponent<
     verifyUserAuthenticated(props.dispatch, fetch, props.accessToken).then(() =>
       setInitialized(true),
     );
-  }, [props.accessToken]);
+  }, [props.accessToken, props.dispatch]);
 
   if (initialized) {
     return <>{props.children}</>;

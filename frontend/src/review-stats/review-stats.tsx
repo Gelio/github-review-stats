@@ -17,23 +17,23 @@ const styles: StyleRulesCallback<'main' | 'input' | 'withMarginLeft'> = (
     width: 'auto',
     display: 'block',
 
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
-    marginTop: theme.spacing.unit,
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    marginTop: theme.spacing(1),
 
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
 
     [theme.breakpoints.up('lg')]: {
-      width: theme.breakpoints.width('lg') - theme.spacing.unit * 2 * 2,
+      width: theme.breakpoints.width('lg') - theme.spacing(2) * 2,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
   },
   input: {
-    marginBottom: theme.spacing.unit * 2,
+    marginBottom: theme.spacing(2),
   },
   withMarginLeft: {
-    marginLeft: theme.spacing.unit,
+    marginLeft: theme.spacing(1),
   },
 });
 
