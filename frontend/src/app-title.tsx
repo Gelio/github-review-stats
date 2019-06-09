@@ -8,7 +8,7 @@ import React, { FunctionComponent } from 'react';
 
 const styles: StyleRulesCallback<'header'> = (theme) => ({
   header: {
-    marginBottom: theme.spacing.unit * 2,
+    marginBottom: theme.spacing(2),
     textAlign: 'center',
   },
 });

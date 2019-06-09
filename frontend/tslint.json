@@ -1,11 +1,5 @@
 {
-  "extends": [
-    "tslint:recommended",
-    "tslint-react",
-    "tslint-import-group-ordering",
-    "tslint-config-prettier",
-    "tslint-plugin-prettier"
-  ],
+  "extends": ["tslint-import-group-ordering"],
   "linterOptions": {
     "exclude": [
       "config/**/*.js",
@@ -15,15 +9,6 @@
   },
   "rules": {
     "interface-name": [true, "never-prefix"],
-    "trailing-comma": [
-      true,
-      {
-        "multiline": "always"
-      }
-    ],
-    "prettier": true,
-    "object-literal-sort-keys": false,
-    "no-console": false,
     "import-group-ordering": [
       true,
       {

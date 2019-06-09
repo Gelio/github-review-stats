@@ -15,9 +15,7 @@ const ApolloSetup: FunctionComponent<StateProps> = ({
 }) => {
   if (!accessToken) {
     throw new Error(
-      `${
-        ApolloSetup.displayName
-      } should be rendered only if the user is logged in.`,
+      `${ApolloSetup.displayName} should be rendered only if the user is logged in.`,
     );
   }
 

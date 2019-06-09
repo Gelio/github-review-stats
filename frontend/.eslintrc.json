@@ -1,0 +1,27 @@
+{
+  "extends": ["react-app", "plugin:prettier/recommended"],
+  "env": {
+    "jest": true,
+    "jasmine": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "plugins": ["@typescript-eslint/tslint", "prettier"],
+  "parserOptions": {
+    "project": "tsconfig.json"
+  },
+  "rules": {
+    "comma-dangle": ["error", "always-multiline"],
+    "quotes": ["error", "single"],
+    "@typescript-eslint/tslint/config": [
+      "warn",
+      {
+        "lintFile": "./tslint.json"
+      }
+    ],
+    "prettier/prettier": "error"
+  }
+}
