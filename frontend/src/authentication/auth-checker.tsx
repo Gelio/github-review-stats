@@ -27,13 +27,14 @@ class AuthChecker extends Component<AuthCheckerProps, AuthCheckerState> {
 
     if (url.searchParams.has('code')) {
       const code = url.searchParams.get('code') as string;
+      url.searchParams.delete('code');
       window.history.replaceState(
         null,
         document.title,
-        window.location.pathname,
+        `${url.pathname}${url.search}`,
       );
 
-      exchangeCodeForAccessToken(this.props.dispatch, fetch, code);
+      await exchangeCodeForAccessToken(this.props.dispatch, fetch, code);
     }
 
     this.setState({
