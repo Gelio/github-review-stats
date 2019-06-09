@@ -6,8 +6,10 @@ import {
   Typography,
   withStyles,
   WithStyles,
+  FormControlLabel,
+  Checkbox,
 } from '@material-ui/core';
-import React, { StatelessComponent } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { connect, MapStateToProps } from 'react-redux';
 
 import { AppTitle } from '../app-title';
@@ -52,11 +54,13 @@ interface AuthenticationPageStateProps {
 type AuthenticationPageProps = WithStyles<typeof styles> &
   AuthenticationPageStateProps;
 
-const AuthenticationPage: StatelessComponent<AuthenticationPageProps> = ({
+const AuthenticationPage: FunctionComponent<AuthenticationPageProps> = ({
   classes,
   isLoading,
   hasError,
 }) => {
+  const [accessToPrivateReposEnabled, setAccessToPrivateRepos] = useState(true);
+
   return (
     <main className={classes.main}>
       <Paper className={classes.paper}>
@@ -76,15 +80,31 @@ const AuthenticationPage: StatelessComponent<AuthenticationPageProps> = ({
         )}
 
         {!isLoading && (
-          <Button
-            variant="contained"
-            color="primary"
-            href={getGithubAuthenticationUrl(
-              RepositoriesPermissions.PublicOnly,
-            )}
-          >
-            Sign up with GitHub
-          </Button>
+          <>
+            <Button
+              variant="contained"
+              color="primary"
+              href={getGithubAuthenticationUrl(
+                accessToPrivateReposEnabled
+                  ? RepositoriesPermissions.PrivateAndPublic
+                  : RepositoriesPermissions.PublicOnly,
+              )}
+            >
+              Sign up with GitHub
+            </Button>
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={accessToPrivateReposEnabled}
+                  onChange={() =>
+                    setAccessToPrivateRepos(!accessToPrivateReposEnabled)
+                  }
+                />
+              }
+              label="Enable access to private repos"
+            />
+          </>
         )}
       </Paper>
     </main>
