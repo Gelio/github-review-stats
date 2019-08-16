@@ -7,6 +7,7 @@ import {
   Typography,
   WithStyles,
   withStyles,
+  Theme,
 } from '@material-ui/core';
 import React, { FunctionComponent, useCallback } from 'react';
 import { connect, DispatchProp, MapStateToProps } from 'react-redux';
@@ -24,6 +25,8 @@ interface StateProps {
 }
 
 const styles: StyleRulesCallback<
+  Theme,
+  {},
   'main' | 'signOutButton' | 'privateReposInfo'
 > = (theme) => ({
   main: {

@@ -3,6 +3,7 @@ import {
   StyleRulesCallback,
   WithStyles,
   withStyles,
+  Theme,
 } from '@material-ui/core';
 import React, { FunctionComponent, useState } from 'react';
 
@@ -10,9 +11,11 @@ import { Inputs } from './inputs';
 import { ReviewStatsInputs } from './interfaces';
 import { QueryRepository } from './query-repository';
 
-const styles: StyleRulesCallback<'main' | 'input' | 'withMarginLeft'> = (
-  theme,
-) => ({
+const styles: StyleRulesCallback<
+  Theme,
+  {},
+  'main' | 'input' | 'withMarginLeft'
+> = (theme) => ({
   main: {
     width: 'auto',
     display: 'block',

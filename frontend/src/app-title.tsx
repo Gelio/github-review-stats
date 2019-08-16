@@ -3,14 +3,15 @@ import {
   Typography,
   withStyles,
   WithStyles,
+  Theme,
 } from '@material-ui/core';
 import React, { FunctionComponent } from 'react';
 
-const styles: StyleRulesCallback<'header'> = (theme) => ({
+const styles: StyleRulesCallback<Theme, {}, 'header'> = (theme) => ({
   header: {
     marginBottom: theme.spacing(2),
     textAlign: 'center',
-  },
+  }
 });
 
 const AppTitle: FunctionComponent<WithStyles<typeof styles>> = ({

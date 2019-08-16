@@ -5,6 +5,7 @@ import {
   TextField,
   WithStyles,
   withStyles,
+  Theme,
 } from '@material-ui/core';
 import { TextFieldProps } from '@material-ui/core/TextField';
 import { subDays } from 'date-fns/esm';
@@ -13,7 +14,7 @@ import React, { FunctionComponent, useCallback, useState } from 'react';
 
 import { ReviewStatsInputs } from './interfaces';
 
-const styles: StyleRulesCallback<'input' | 'withMarginRight'> = (theme) => ({
+const styles: StyleRulesCallback<Theme, {}, 'input' | 'withMarginRight'> = (theme) => ({
   input: {
     marginBottom: theme.spacing(2),
   },

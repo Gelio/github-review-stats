@@ -8,6 +8,7 @@ import {
   WithStyles,
   FormControlLabel,
   Checkbox,
+  Theme,
 } from '@material-ui/core';
 import React, { FunctionComponent, useState } from 'react';
 import { connect, MapStateToProps } from 'react-redux';
@@ -17,9 +18,11 @@ import { StoreState } from '../store';
 import { getGithubAuthenticationUrl } from './get-github-authentication-url';
 import { RepositoriesPermissions } from './repositories-permissions';
 
-const styles: StyleRulesCallback<'main' | 'paper' | 'loadingWrapper'> = (
-  theme,
-) => ({
+const styles: StyleRulesCallback<
+  Theme,
+  {},
+  'main' | 'paper' | 'loadingWrapper'
+> = (theme) => ({
   main: {
     width: 'auto',
 

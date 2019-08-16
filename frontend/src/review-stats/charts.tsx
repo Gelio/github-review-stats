@@ -1,4 +1,9 @@
-import { StyleRulesCallback, withStyles, WithStyles } from '@material-ui/core';
+import {
+  StyleRulesCallback,
+  withStyles,
+  WithStyles,
+  Theme,
+} from '@material-ui/core';
 import React, { FunctionComponent } from 'react';
 import {
   Bar,
@@ -16,7 +21,7 @@ import {
 import { colorPalette } from './color-palette';
 import { TransformedReview } from './interfaces';
 
-const styles: StyleRulesCallback<'chartsWrapper'> = (_) => ({
+const styles: StyleRulesCallback<Theme, {}, 'chartsWrapper'> = (_) => ({
   chartsWrapper: {
     display: 'flex',
     alignItems: 'center',
