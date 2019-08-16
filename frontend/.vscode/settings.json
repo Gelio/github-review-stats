@@ -8,6 +8,12 @@
     "**/node_modules": true,
     "azure": true
   },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    { "language": "typescript", "autoFix": true },
+    { "language": "typescriptreact", "autoFix": true }
+  ],
   "workbench.colorCustomizations": {
     "activityBar.background": "#1accff",
     "activityBar.foreground": "#15202b",
@@ -17,12 +23,10 @@
     "titleBar.activeBackground": "#00b3e6",
     "titleBar.inactiveBackground": "#00b3e699",
     "titleBar.activeForeground": "#15202b",
-    "titleBar.inactiveForeground": "#15202b99"
+    "titleBar.inactiveForeground": "#15202b99",
+    "statusBar.background": "#00b3e6",
+    "statusBarItem.hoverBackground": "#008bb3",
+    "statusBar.foreground": "#15202b"
   },
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    { "language": "typescript", "autoFix": true },
-    { "language": "typescriptreact", "autoFix": true }
-  ]
+  "peacock.color": "#00b3e6"
 }
