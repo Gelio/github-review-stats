@@ -9,7 +9,13 @@
       "version": "detect"
     }
   },
-  "plugins": ["@typescript-eslint/tslint", "prettier"],
+  "plugins": [
+    "@typescript/eslint",
+    "@typescript-eslint/tslint",
+    "prettier",
+    "prettier/@typescript-eslint"
+  ],
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "tsconfig.json"
   },

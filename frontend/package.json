@@ -35,6 +35,7 @@
     "@types/react-dom": "^16.8.5",
     "@types/react-redux": "^7.1.2",
     "@types/recharts": "^1.1.16",
+    "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/eslint-plugin-tslint": "^1.13.0",
     "eslint-config-prettier": "^4.3.0",
     "eslint-plugin-prettier": "^3.1.0",

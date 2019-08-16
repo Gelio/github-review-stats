@@ -11,7 +11,7 @@ const styles: StyleRulesCallback<Theme, {}, 'header'> = (theme) => ({
   header: {
     marginBottom: theme.spacing(2),
     textAlign: 'center',
-  }
+  },
 });
 
 const AppTitle: FunctionComponent<WithStyles<typeof styles>> = ({
