@@ -14,7 +14,9 @@ import React, { FunctionComponent, useCallback, useState } from 'react';
 
 import { ReviewStatsInputs } from './interfaces';
 
-const styles: StyleRulesCallback<Theme, {}, 'input' | 'withMarginRight'> = (theme) => ({
+const styles: StyleRulesCallback<Theme, {}, 'input' | 'withMarginRight'> = (
+  theme,
+) => ({
   input: {
     marginBottom: theme.spacing(2),
   },
