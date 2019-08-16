@@ -75,7 +75,7 @@ export const QueryRepository: FunctionComponent<QueryRepositoryProps> = ({
           }
           if (error || !data) {
             console.error('Error while fetching the query', error);
-            return 'Error!';
+            return <p>Error!</p>;
           }
 
           return <MetricPickerWithCharts pullRequests={data.search.nodes} />;
