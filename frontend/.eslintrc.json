@@ -40,6 +40,8 @@
       }
     ],
 
+    "@typescript-eslint/no-explicit-any": "off",
+
     // TODO: remove after configs are updated and no longer reference the rule below
     "@typescript-eslint/no-angle-bracket-type-assertion": "off"
   }
