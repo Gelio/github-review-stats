@@ -1,10 +1,11 @@
 import { CircularProgress } from '@material-ui/core';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState, useMemo } from 'react';
 import { useApolloClient } from 'react-apollo';
 
-import { ReviewStatsInputs, PullRequest } from './types';
+import { ReviewStatsInputs } from './types';
 import { MetricPickerWithCharts } from './metric-picker-with-charts';
 import { fetchPrs } from './fetching/fetch-prs';
+import { useObservable } from './fetching/use-observable';
 
 interface QueryRepositoryProps {
   queryData: ReviewStatsInputs;
@@ -13,19 +14,24 @@ interface QueryRepositoryProps {
 export const QueryRepository: FunctionComponent<QueryRepositoryProps> = ({
   queryData,
 }) => {
-  const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
+  // const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error] = useState(null);
   const apolloClient = useApolloClient();
 
-  useEffect(() => {
-    fetchPrs(apolloClient, queryData)
-      .then(setPullRequests)
-      .catch(setError)
-      .finally(() => setLoading(false));
-  }, [apolloClient, queryData]);
+  const fetchPrs$ = useMemo(() => fetchPrs(apolloClient, queryData), [
+    apolloClient,
+    queryData,
+  ]);
 
-  if (loading) {
+  const pullRequests = useObservable(fetchPrs$);
+
+  useEffect(() => {
+    const isLoading = !pullRequests || pullRequests.length === 0;
+    setLoading(isLoading);
+  }, [pullRequests]);
+
+  if (loading || !pullRequests) {
     return (
       <div>
         <CircularProgress />
@@ -41,8 +47,6 @@ export const QueryRepository: FunctionComponent<QueryRepositoryProps> = ({
       </div>
     );
   }
-
-  console.log(pullRequests);
 
   return (
     <div>
