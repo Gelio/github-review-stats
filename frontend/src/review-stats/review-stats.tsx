@@ -8,7 +8,7 @@ import {
 import React, { FunctionComponent, useState } from 'react';
 
 import { Inputs } from './inputs';
-import { ReviewStatsInputs } from './interfaces';
+import { ReviewStatsInputs } from './types';
 import { QueryRepository } from './query-repository';
 
 const styles: StyleRulesCallback<

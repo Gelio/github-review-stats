@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 
 import { Charts } from './charts';
-import { PullRequest } from './interfaces';
+import { PullRequest } from './types';
 import { MetricKind, metrics } from './metrics';
 import { transformPullRequests } from './transform-pull-requests';
 

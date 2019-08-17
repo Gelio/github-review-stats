@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import React, { FunctionComponent } from 'react';
 import { Query } from 'react-apollo';
 
-import { ReviewStatsInputs, PullRequest } from './interfaces';
+import { ReviewStatsInputs, PullRequest } from './types';
 import { MetricPickerWithCharts } from './metric-picker-with-charts';
 
 const GET_REPOSITORY_INFO_QUERY = gql`

@@ -12,7 +12,7 @@ import { subDays } from 'date-fns/esm';
 import { DateTimePicker } from 'material-ui-pickers';
 import React, { FunctionComponent, useCallback, useState } from 'react';
 
-import { ReviewStatsInputs } from './interfaces';
+import { ReviewStatsInputs } from './types';
 
 const styles: StyleRulesCallback<Theme, {}, 'input' | 'withMarginRight'> = (
   theme,

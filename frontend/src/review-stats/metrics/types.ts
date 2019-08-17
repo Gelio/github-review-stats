@@ -1,4 +1,4 @@
-import { PullRequest } from '../interfaces';
+import { PullRequest } from '../types';
 
 export type ReviewMetric = (
   pullRequests: PullRequest[],
