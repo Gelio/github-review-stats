@@ -1,4 +1,6 @@
-import { ApolloClient, ObservableQuery } from 'apollo-boost';
+import { ApolloClient, ObservableQuery, ApolloQueryResult } from 'apollo-boost';
+import { of, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 import {
   GetPullRequestsQueryVariables,
@@ -7,12 +9,13 @@ import {
 } from './get-pull-requests-query';
 import { ReviewStatsInputs, PullRequest } from '../types';
 import { createSearchQueryString } from './create-search-query-string';
-import Observable from 'zen-observable-ts';
+import ZenObservable from 'zen-observable';
+import { zenObservableToRxJs } from './zen-observable-rxjs-adapter';
 
 export function fetchPrs(
   client: ApolloClient<unknown>,
   inputs: ReviewStatsInputs,
-) {
+): Observable<PullRequest[]> {
   /**
    * 1. Fetch first page of PRs
    * 2. Has next page?
@@ -29,14 +32,18 @@ export function fetchPrs(
 
   const pullRequests: PullRequest[] = [];
 
-  const fetchNextPage = () =>
+  const fetchNextPage = (): Observable<PullRequest[]> => {
+    const getPullRequestsPage$ = zenObservableToRxJs(
     normalizeObservableQuery(
       client.watchQuery<GetPullRequestsQueryResponse>({
         query: GET_PULL_REQUESTS_QUERY,
         variables,
       }),
-    ).flatMap<PullRequest[]>(
-      ({ data }): Observable<PullRequest[]> => {
+      ),
+    );
+
+    return getPullRequestsPage$.pipe(
+      switchMap(({ data }) => {
         pullRequests.push(...data.search.nodes);
 
         const { hasNextPage, endCursor } = data.search.pageInfo;
@@ -46,9 +53,10 @@ export function fetchPrs(
           return fetchNextPage();
         }
 
-        return Observable.of(pullRequests);
-      },
+        return of(pullRequests);
+      }),
     );
+  };
 
   return fetchNextPage();
 }
@@ -59,5 +67,7 @@ export function fetchPrs(
  * @see https://github.com/apollographql/apollo-client/issues/3721
  */
 function normalizeObservableQuery<T>(observableQuery: ObservableQuery<T>) {
-  return Observable.from(observableQuery);
+  return ZenObservable.from((observableQuery as unknown) as ZenObservable<
+    ApolloQueryResult<T>
+  >);
 }

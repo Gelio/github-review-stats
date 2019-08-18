@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-
-import Observable from 'zen-observable-ts';
+import { Observable } from 'rxjs';
 
 export const useObservable = <T>(observable: Observable<T>) => {
   const [state, setState] = useState<T | null>(null);
