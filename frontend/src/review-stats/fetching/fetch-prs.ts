@@ -1,7 +1,7 @@
 import { ApolloClient } from 'apollo-boost';
 import { of, Observable, concat, merge } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
-import { Reducer, Action } from 'redux';
+import { Reducer } from 'redux';
 
 import {
   GetPullRequestsQueryVariables,
@@ -10,8 +10,8 @@ import {
 } from './get-pull-requests-query';
 import { ReviewStatsInputs, PullRequest } from '../types';
 import { createSearchQueryString } from './create-search-query-string';
-import ZenObservable from 'zen-observable';
 import { zenObservableToRxJs } from './zen-observable-rxjs-adapter';
+import { reducerWithState } from './reducer-with-state';
 import { normalizeObservableQuery } from './normalize-observable-query';
 
 export enum FetchingState {
@@ -117,22 +117,6 @@ const fetchPrsReducer: Reducer<FetchingPullRequestsData, FetchPrsAction> = (
   return state;
 };
 
-type DispatcherReturningState<State, Action> = (action: Action) => State;
-const reducerWithState = <State, A extends Action<any>>(
-  reducer: Reducer<State, A>,
-): [State, DispatcherReturningState<State, A>] => {
-  let state = reducer(undefined, { type: '' } as any);
-
-  return [
-    state,
-    (action) => {
-      state = reducer(state, action);
-
-      return state;
-    },
-  ];
-};
-
 export function fetchPrs(
   client: ApolloClient<unknown>,
   inputs: ReviewStatsInputs,
@@ -199,7 +183,7 @@ export function fetchPrs(
         console.error('Error when fetching next page', error, state);
         state = dispatch({
           type: 'ERROR',
-          errorMessage: 'Error while fetching next page',
+          errorMessage: 'Error while fetching data from GitHub',
         });
 
         return of(state);
