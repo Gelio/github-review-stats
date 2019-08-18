@@ -1,4 +1,4 @@
-import { ApolloClient, ObservableQuery, ApolloQueryResult } from 'apollo-boost';
+import { ApolloClient } from 'apollo-boost';
 import { of, Observable, concat, merge } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 import { Reducer, Action } from 'redux';
@@ -12,6 +12,7 @@ import { ReviewStatsInputs, PullRequest } from '../types';
 import { createSearchQueryString } from './create-search-query-string';
 import ZenObservable from 'zen-observable';
 import { zenObservableToRxJs } from './zen-observable-rxjs-adapter';
+import { normalizeObservableQuery } from './normalize-observable-query';
 
 export enum FetchingState {
   Initializing = 'INITIALIZING',
@@ -205,15 +206,4 @@ export function fetchPrs(
       }),
     ),
   );
-}
-
-/**
- * Allows using `zen-observable` operators on an observable
- * TODO: remove after upgrading to `apollo-client@2.6.8`
- * @see https://github.com/apollographql/apollo-client/issues/3721
- */
-function normalizeObservableQuery<T>(observableQuery: ObservableQuery<T>) {
-  return ZenObservable.from((observableQuery as unknown) as ZenObservable<
-    ApolloQueryResult<T>
-  >);
 }
