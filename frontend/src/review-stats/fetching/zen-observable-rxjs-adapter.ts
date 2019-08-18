@@ -14,5 +14,9 @@ export const zenObservableToRxJs = <T>(zenObservable: ZenObservable<T>) =>
       error: (err) => subscriber.error(err),
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      if (!subscription.closed) {
+        subscription.unsubscribe();
+      }
+    };
   });
