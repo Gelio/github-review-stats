@@ -1,4 +1,4 @@
-import { PullRequest, TransformedReview } from './interfaces';
+import { PullRequest, TransformedReview } from './types';
 import { ReviewMetric } from './metrics/types';
 
 export const transformPullRequests = (

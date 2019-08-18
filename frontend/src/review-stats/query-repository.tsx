@@ -1,94 +1,114 @@
-import { CircularProgress } from '@material-ui/core';
-import { format } from 'date-fns/esm';
-import gql from 'graphql-tag';
-import React, { FunctionComponent } from 'react';
-import { Query } from 'react-apollo';
+import { CircularProgress, Button } from '@material-ui/core';
+import React, { FunctionComponent, useMemo, useState } from 'react';
+import { useApolloClient } from 'react-apollo';
 
-import { ReviewStatsInputs, PullRequest } from './interfaces';
+import { ReviewStatsInputs } from './types';
 import { MetricPickerWithCharts } from './metric-picker-with-charts';
-
-const GET_REPOSITORY_INFO_QUERY = gql`
-  query GetRepositoryInfo(
-    $firstPrs: Int!
-    $firstReviews: Int!
-    $query: String!
-  ) {
-    search(first: $firstPrs, type: ISSUE, query: $query) {
-      nodes {
-        ... on PullRequest {
-          number
-          permalink
-          title
-          updatedAt
-          changedFiles
-          additions
-          deletions
-          author {
-            login
-          }
-          reviews(first: $firstReviews) {
-            nodes {
-              author {
-                login
-              }
-              comments {
-                totalCount
-              }
-              publishedAt
-              state
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import {
+  fetchPrs,
+  FetchingState,
+  FetchingPullRequestsData,
+} from './fetching/fetch-prs';
+import { useObservable } from './fetching/use-observable';
 
 interface QueryRepositoryProps {
   queryData: ReviewStatsInputs;
 }
 
-interface QueryResponse {
-  search: {
-    nodes: PullRequest[];
-  };
-}
-
 export const QueryRepository: FunctionComponent<QueryRepositoryProps> = ({
   queryData,
 }) => {
-  const queryVariables = {
-    firstPrs: 100,
-    firstReviews: 100,
-    query: createSearchQueryString(queryData),
-  };
+  const apolloClient = useApolloClient();
+
+  const fetchPrs$ = useMemo(() => fetchPrs(apolloClient, queryData), [
+    apolloClient,
+    queryData,
+  ]);
+
+  const fetchPrsState = useObservable(fetchPrs$);
+
+  if (!fetchPrsState || fetchPrsState.state === FetchingState.Initializing) {
+    return (
+      <div>
+        <p>Fetching data...</p>
+
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  switch (fetchPrsState.state) {
+    case FetchingState.InProgress:
+      return (
+        <div>
+          <p>Fetching data...</p>
+
+          <CircularProgress />
+
+          <p>
+            Fetched data for {fetchPrsState.pullRequests.length} of{' '}
+            {fetchPrsState.totalPrs} Pull Requests.
+          </p>
+        </div>
+      );
+
+    case FetchingState.Error:
+      return <FetchingErrorPage fetchPrsState={fetchPrsState} />;
+
+    case FetchingState.Finished:
+      return (
+        <div>
+          <MetricPickerWithCharts pullRequests={fetchPrsState.pullRequests} />
+        </div>
+      );
+  }
+};
+
+const FetchingErrorPage: FunctionComponent<{
+  fetchPrsState: FetchingPullRequestsData;
+}> = ({ fetchPrsState }) => {
+  const [shouldShowAnyway, setShouldShowAnyway] = useState(false);
+
+  if (fetchPrsState.state !== FetchingState.Error) {
+    throw new Error(
+      `${FetchingErrorPage.displayName} should only be passed data in the ${FetchingState.Error} state`,
+    );
+  }
+
+  if (shouldShowAnyway) {
+    return (
+      <div>
+        <p>Error: {fetchPrsState.errorMessage}</p>
+        <p>
+          Showing PR stats for {fetchPrsState.pullRequests.length} of{' '}
+          {fetchPrsState.totalPrs} PRs anyway
+        </p>
+
+        <MetricPickerWithCharts pullRequests={fetchPrsState.pullRequests} />
+      </div>
+    );
+  }
 
   return (
     <div>
-      <Query<QueryResponse>
-        query={GET_REPOSITORY_INFO_QUERY}
-        variables={queryVariables}
-      >
-        {({ loading, error, data }) => {
-          if (loading) {
-            return <CircularProgress />;
-          }
-          if (error || !data) {
-            console.error('Error while fetching the query', error);
-            return <p>Error!</p>;
-          }
+      <p>Error: {fetchPrsState.errorMessage}</p>
 
-          return <MetricPickerWithCharts pullRequests={data.search.nodes} />;
-        }}
-      </Query>
+      {fetchPrsState.pullRequests.length > 0 && (
+        <>
+          <p>
+            Fetched data for {fetchPrsState.pullRequests.length} of{' '}
+            {fetchPrsState.totalPrs} PRs.
+          </p>
+
+          <Button
+            onClick={() => setShouldShowAnyway(true)}
+            color="secondary"
+            variant="contained"
+          >
+            Show PR data anyway
+          </Button>
+        </>
+      )}
     </div>
   );
 };
-
-const formatGitHubDateTime = (date: Date) =>
-  [format(date, 'yyyy-MM-dd'), 'T', format(date, 'HH:mm:ss'), 'Z'].join('');
-
-const createSearchQueryString = (queryData: ReviewStatsInputs) =>
-  `type:pr repo:${queryData.repository} updated:${formatGitHubDateTime(
-    queryData.fromDate,
-  )}..${formatGitHubDateTime(queryData.toDate)} sort:updated-desc`;

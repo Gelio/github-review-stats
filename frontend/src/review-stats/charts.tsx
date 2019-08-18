@@ -19,7 +19,7 @@ import {
 } from 'recharts';
 
 import { colorPalette } from './color-palette';
-import { TransformedReview } from './interfaces';
+import { TransformedReview } from './types';
 
 const styles: StyleRulesCallback<Theme, {}, 'chartsWrapper'> = (_) => ({
   chartsWrapper: {
