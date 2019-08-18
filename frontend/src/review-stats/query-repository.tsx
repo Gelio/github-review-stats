@@ -1,10 +1,14 @@
-import { CircularProgress } from '@material-ui/core';
-import React, { FunctionComponent, useMemo } from 'react';
+import { CircularProgress, Button } from '@material-ui/core';
+import React, { FunctionComponent, useMemo, useState } from 'react';
 import { useApolloClient } from 'react-apollo';
 
 import { ReviewStatsInputs } from './types';
 import { MetricPickerWithCharts } from './metric-picker-with-charts';
-import { fetchPrs, FetchingState } from './fetching/fetch-prs';
+import {
+  fetchPrs,
+  FetchingState,
+  FetchingPullRequestsData,
+} from './fetching/fetch-prs';
 import { useObservable } from './fetching/use-observable';
 
 interface QueryRepositoryProps {
@@ -26,7 +30,8 @@ export const QueryRepository: FunctionComponent<QueryRepositoryProps> = ({
   if (!fetchPrsState || fetchPrsState.state === FetchingState.Initializing) {
     return (
       <div>
-        <p>Initializing (fetching the first page)</p>
+        <p>Fetching data...</p>
+
         <CircularProgress />
       </div>
     );
@@ -36,15 +41,19 @@ export const QueryRepository: FunctionComponent<QueryRepositoryProps> = ({
     case FetchingState.InProgress:
       return (
         <div>
+          <p>Fetching data...</p>
+
+          <CircularProgress />
+
           <p>
-            Fetched pages: {fetchPrsState.fetchedPages}. Total PRs to fetch:{' '}
-            {fetchPrsState.totalPrs}
+            Fetched data for {fetchPrsState.pullRequests.length} of{' '}
+            {fetchPrsState.totalPrs} Pull Requests.
           </p>
         </div>
       );
 
     case FetchingState.Error:
-      return <div>Error: {fetchPrsState.errorMessage}</div>;
+      return <FetchingErrorPage fetchPrsState={fetchPrsState} />;
 
     case FetchingState.Finished:
       return (
@@ -53,4 +62,53 @@ export const QueryRepository: FunctionComponent<QueryRepositoryProps> = ({
         </div>
       );
   }
+};
+
+const FetchingErrorPage: FunctionComponent<{
+  fetchPrsState: FetchingPullRequestsData;
+}> = ({ fetchPrsState }) => {
+  const [shouldShowAnyway, setShouldShowAnyway] = useState(false);
+
+  if (fetchPrsState.state !== FetchingState.Error) {
+    throw new Error(
+      `${FetchingErrorPage.displayName} should only be passed data in the ${FetchingState.Error} state`,
+    );
+  }
+
+  if (shouldShowAnyway) {
+    return (
+      <div>
+        <p>Error: {fetchPrsState.errorMessage}</p>
+        <p>
+          Showing PR stats for {fetchPrsState.pullRequests.length} of{' '}
+          {fetchPrsState.totalPrs} PRs anyway
+        </p>
+
+        <MetricPickerWithCharts pullRequests={fetchPrsState.pullRequests} />
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <p>Error: {fetchPrsState.errorMessage}</p>
+
+      {fetchPrsState.pullRequests.length > 0 && (
+        <>
+          <p>
+            Fetched data for {fetchPrsState.pullRequests.length} of{' '}
+            {fetchPrsState.totalPrs} PRs.
+          </p>
+
+          <Button
+            onClick={() => setShouldShowAnyway(true)}
+            color="secondary"
+            variant="contained"
+          >
+            Show PR data anyway
+          </Button>
+        </>
+      )}
+    </div>
+  );
 };
