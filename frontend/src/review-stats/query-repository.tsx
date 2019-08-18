@@ -1,10 +1,10 @@
 import { CircularProgress } from '@material-ui/core';
-import React, { FunctionComponent, useEffect, useState, useMemo } from 'react';
+import React, { FunctionComponent, useMemo } from 'react';
 import { useApolloClient } from 'react-apollo';
 
 import { ReviewStatsInputs } from './types';
 import { MetricPickerWithCharts } from './metric-picker-with-charts';
-import { fetchPrs } from './fetching/fetch-prs';
+import { fetchPrs, FetchingState } from './fetching/fetch-prs';
 import { useObservable } from './fetching/use-observable';
 
 interface QueryRepositoryProps {
@@ -14,9 +14,6 @@ interface QueryRepositoryProps {
 export const QueryRepository: FunctionComponent<QueryRepositoryProps> = ({
   queryData,
 }) => {
-  // const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error] = useState(null);
   const apolloClient = useApolloClient();
 
   const fetchPrs$ = useMemo(() => fetchPrs(apolloClient, queryData), [
@@ -24,33 +21,36 @@ export const QueryRepository: FunctionComponent<QueryRepositoryProps> = ({
     queryData,
   ]);
 
-  const pullRequests = useObservable(fetchPrs$);
+  const fetchPrsState = useObservable(fetchPrs$);
 
-  useEffect(() => {
-    const isLoading = !pullRequests || pullRequests.length === 0;
-    setLoading(isLoading);
-  }, [pullRequests]);
-
-  if (loading || !pullRequests) {
+  if (!fetchPrsState || fetchPrsState.state === FetchingState.Initializing) {
     return (
       <div>
+        <p>Initializing (fetching the first page)</p>
         <CircularProgress />
       </div>
     );
   }
 
-  if (error) {
-    console.error('Error while fetching the query', error);
-    return (
-      <div>
-        <p>Error!</p>
-      </div>
-    );
-  }
+  switch (fetchPrsState.state) {
+    case FetchingState.InProgress:
+      return (
+        <div>
+          <p>
+            Fetched pages: {fetchPrsState.fetchedPages}. Total PRs to fetch:{' '}
+            {fetchPrsState.totalPrs}
+          </p>
+        </div>
+      );
 
-  return (
-    <div>
-      <MetricPickerWithCharts pullRequests={pullRequests} />
-    </div>
-  );
+    case FetchingState.Error:
+      return <div>Error: {fetchPrsState.errorMessage}</div>;
+
+    case FetchingState.Finished:
+      return (
+        <div>
+          <MetricPickerWithCharts pullRequests={fetchPrsState.pullRequests} />
+        </div>
+      );
+  }
 };
