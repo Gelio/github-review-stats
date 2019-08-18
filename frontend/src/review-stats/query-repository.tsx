@@ -1,4 +1,4 @@
-import { CircularProgress, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import React, { FunctionComponent, useMemo, useState } from 'react';
 import { useApolloClient } from 'react-apollo';
 
@@ -10,6 +10,7 @@ import {
   FetchingPullRequestsData,
 } from './fetching/fetch-prs';
 import { useObservable } from './fetching/use-observable';
+import { FetchingProgress } from './fetching-progress';
 
 interface QueryRepositoryProps {
   queryData: ReviewStatsInputs;
@@ -30,9 +31,7 @@ export const QueryRepository: FunctionComponent<QueryRepositoryProps> = ({
   if (!fetchPrsState || fetchPrsState.state === FetchingState.Initializing) {
     return (
       <div>
-        <p>Fetching data...</p>
-
-        <CircularProgress />
+        <FetchingProgress variant="indeterminate" />
       </div>
     );
   }
@@ -41,14 +40,11 @@ export const QueryRepository: FunctionComponent<QueryRepositoryProps> = ({
     case FetchingState.InProgress:
       return (
         <div>
-          <p>Fetching data...</p>
-
-          <CircularProgress />
-
-          <p>
-            Fetched data for {fetchPrsState.pullRequests.length} of{' '}
-            {fetchPrsState.totalPrs} Pull Requests.
-          </p>
+          <FetchingProgress
+            variant="determinate"
+            fetchedPrs={fetchPrsState.pullRequests.length}
+            totalPrs={fetchPrsState.totalPrs}
+          />
         </div>
       );
 
